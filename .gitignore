@@ -5,6 +5,7 @@ node_modules/
 /coverage
 
 [b,B]uild/
+db/
 
 *.db
 *cache
