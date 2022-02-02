@@ -1,7 +1,12 @@
 {
+  "name": "root",
   "license": "MIT",
   "dependencies": {
     "concurrently": "^7.0.0"
   },
-  "scripts": {}
+  "scripts": {
+    "install:app": "cd app && yarn install",
+    "install:service": "cd service && yarn install",
+    "postinstall": "yarn run install:app && yarn run install:service"
+  }
 }

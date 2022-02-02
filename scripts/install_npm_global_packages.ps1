@@ -1,4 +1,4 @@
-function Install-Global-Package {
+function Install-GlobalPackage {
     param($packageName)
 
     try {
@@ -29,7 +29,7 @@ try {
     ("`n==========================================" + ("=" * $npmVersion.Length))
 
     foreach ($package in $packages) {
-        Install-Global-Package -packageName $package
+        Install-GlobalPackage -packageName $package
     }
 } catch {
     Write-Host -f Red "`nnpm not installed"

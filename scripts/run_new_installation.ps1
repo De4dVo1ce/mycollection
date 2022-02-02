@@ -1,21 +1,9 @@
-param ([switch]$clear, [switch]$install, [switch]$adds, [switch]$modules, [switch]$upgrade)
+$workDir = Get-Location
 
-$repoRoot = $PSScriptRoot
-Set-Location $repoRoot
+Set-Location $PSScriptRoot
 
-if ($clear) {
-  .\clear_node_modules.ps1
-}
+..\clear_node_modules.ps1
+.\install_npm_global_packages.ps1
+.\install_node_modules.ps1
 
-if ($adds -or $install) {  
-  .\scripts\install_npm_global_packages.ps1
-}
-
-if ($modules -or $install -or $upgrade) {
-  .\scripts\install_node_modules.ps1
-}
-
-if ($upgrade) {
-  .\scripts\upgrade_packages.ps1
-}
-
+Set-Location $workDir

@@ -13,6 +13,7 @@
   },
   "scripts": {
     "debug": "nodemon index",
-    "serve": "pm2 start index.js --watch"
+    "serve": "pm2 start index.js --watch",
+    "start": "yarn run serve"
   }
 }
