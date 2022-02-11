@@ -14,15 +14,20 @@ type DatastorePool = {
   user_pw: UserPwDatabase
 }
 
-export let datastorePool: DatastorePool = undefined
+export const datastorePool: DatastorePool = {
+  collection: undefined,
+  collectionItem: undefined,
+  collectionCollumn: undefined,
+  shared: undefined,
+  user: undefined,
+  user_pw: undefined,
+}
 
 export const loadDatastores = () => {
-  datastorePool = {
-    collection: new CollectionDatabase(),
-    collectionItem: new CollectionItemDatabase(),
-    collectionCollumn: new CollectionCollumnDatabase(),
-    shared: new SharedDatabase(),
-    user: new UserDatabase(),
-    user_pw: new UserPwDatabase(),
-  }
+  datastorePool.collection = new CollectionDatabase()
+  datastorePool.collectionItem = new CollectionItemDatabase()
+  datastorePool.collectionCollumn = new CollectionCollumnDatabase()
+  datastorePool.shared = new SharedDatabase()
+  datastorePool.user = new UserDatabase()
+  datastorePool.user_pw = new UserPwDatabase()
 }
