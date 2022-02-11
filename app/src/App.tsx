@@ -1,4 +1,5 @@
 import React from 'react'
+import { runApiTest } from './apiTest'
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
           Learn React
         </a>
       </header>
+
+      <button onClick={() => {runApiTest()}}>Run API Test</button>
     </div>
   )
 }

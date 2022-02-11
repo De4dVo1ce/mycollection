@@ -7,6 +7,9 @@
   "scripts": {
     "install:app": "cd app && yarn install",
     "install:service": "cd service && yarn install",
-    "postinstall": "yarn run install:app && yarn run install:service"
+    "postinstall": "yarn run install:app && yarn run install:service",
+    "start:app": "yarn --cwd app run start",
+    "start:service": "yarn --cwd service run start",
+    "start": "concurrently \"yarn run start:app\" \"yarn run start:service\""
   }
 }
