@@ -1,5 +1,5 @@
-import { accessFilterIntervalMs } from '../utils/constances'
-import { Access } from '../types'
+import { accessFilterIntervalMs } from '../../utils/constances'
+import { Access } from './class_access'
 
 let accesses: Array<Access> = []
 

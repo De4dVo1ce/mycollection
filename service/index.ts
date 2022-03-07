@@ -1,8 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 
-import { datastorePool, loadDatastores } from './src/database/loadDatabases'
-import { startAccessManaging } from './src/logic/accessManaging'
+import { loadDatastores } from './src/database/loadDatabases'
+import { startAccessManaging } from './src/logic/auth/accessManaging'
 import { authRouter } from './src/api/authentication'
 import { collectionsRouter } from './src/api/collections'
 import { sharedRouter } from './src/api/shared'

@@ -1,85 +1,20 @@
 import Datastore = require('nedb')
 import { CollectionItem } from '../datastores.types'
-import { createDatastorePath } from '../createDatastoreFilePath'
+import { DatabaseConnection } from './databaseConnection'
 
-export class CollectionItemDatabase {
-  private connection: Datastore<CollectionItem>
-
+export class CollectionItemDatabase extends DatabaseConnection<CollectionItem> {
   constructor() {
-    this.connection = new Datastore<CollectionItem>({
-      filename: createDatastorePath(`collectionItem`),
-      autoload: true,
-      onload: (err) => {
-        if (err) {
-          console.error(err)
-        }
-      },
-    })
+    super('collectionItem')
   }
 
-  createNewItem(
-    newItem: CollectionItem,
-    callback?: (err: Error, doc: CollectionItem) => void
-  ) {
-    this.connection.insert(newItem, callback)
-  }
-
-  createMultipleItems(
-    newItems: Array<CollectionItem>,
-    callback?: (err: Error, docs: Array<CollectionItem>) => void
-  ) {
-    this.connection.insert(
-      newItems.map((nI) => ({ ...nI, _id: undefined })),
-      callback
-    )
-  }
-
-  getItemsByCollectionId(
+  getAllByCollectionId(
     collection_id: string,
     callback?: (err: Error, docs: Array<CollectionItem>) => void
   ) {
     this.connection.find({ collection_id: collection_id }, {}, callback)
   }
 
-  getItemById(
-    item_id: string,
-    callback?: (err: Error, docs: Array<CollectionItem>) => void
-  ) {
-    this.connection.find({ _id: item_id }, {}, callback)
-  }
-
-  updateItem(
-    item_id: string,
-    item: CollectionItem,
-    callback?: (err: Error, numberOfUpdated: number) => void
-  ) {
-    this.connection.update(
-      { _id: item_id },
-      { $set: { ...item } },
-      {},
-      callback
-    )
-  }
-
-  removeItem(
-    item_id: string,
-    callback?: (err: Error, numRemoved: number) => void
-  ) {
-    this.connection.remove({ _id: item_id }, {}, callback)
-  }
-
-  removeMultipleItems(
-    item_ids: Array<string>,
-    callback?: (err: Error, numRemoved: number) => void
-  ) {
-    this.connection.remove(
-      { _id: { $in: item_ids } },
-      { multi: true },
-      callback
-    )
-  }
-
-  removeItemsByCollectionId(
+  removeByCollectionId(
     collection_id: string,
     callback?: (err: Error, numRemoved: number) => void
   ) {

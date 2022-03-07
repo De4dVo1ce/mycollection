@@ -12,10 +12,5 @@
       "*": ["node_modules/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "index.ts",
-    "src/types.ts",
-    "src/database/datastores.types.ts"
-  ]
+  "include": ["src/**/*", "index.ts", "src/database/datastores.types.ts"]
 }

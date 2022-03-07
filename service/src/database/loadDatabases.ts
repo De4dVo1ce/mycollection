@@ -1,7 +1,7 @@
 import { CollectionDatabase } from './connections/collection.db'
 import { CollectionItemDatabase } from './connections/collectionItem.db'
 import { CollectionCollumnDatabase } from './connections/collectionsCollumn.db'
-import { SharedDatabase } from './connections/shared.db'
+import { SharedDatabase } from './connections/share.db'
 import { UserDatabase } from './connections/user.db'
 import { UserPwDatabase } from './connections/userPw.db'
 

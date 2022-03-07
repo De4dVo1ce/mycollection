@@ -1,14 +1,5 @@
 import { v4 as uuid } from 'uuid'
-import { accessCheckIntervalMs, accessTtlMs } from './utils/constances'
-
-export type ServiceCallbackFunction = (
-  status: number,
-  body?: {
-    doc?: any
-    docs?: Array<any>
-    [key: string]: any
-  }
-) => void
+import { accessCheckIntervalMs, accessTtlMs } from '../../utils/constances'
 
 export class Access {
   /**
