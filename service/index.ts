@@ -3,10 +3,10 @@ import cors from 'cors'
 
 import { loadDatastores } from './src/database/loadDatabases'
 import { startAccessManaging } from './src/logic/auth/accessManaging'
-import { authRouter } from './src/api/authentication'
-import { collectionsRouter } from './src/api/collections'
-import { sharedRouter } from './src/api/shared'
-import { usersRouter } from './src/api/users'
+import { router as authRouter } from './src/api/authentication'
+import { router as collectionsRouter } from './src/api/collections'
+import { router as sharedRouter } from './src/api/shared'
+import { router as userRouter } from './src/api/users'
 
 console.log(new Date())
 
@@ -20,7 +20,7 @@ app.use(cors())
 app.use(`/auth`, authRouter)
 app.use(`/collections`, collectionsRouter)
 app.use(`/shared`, sharedRouter)
-app.use(`/users`, usersRouter)
+app.use(`/users`, userRouter)
 
 const port = process.env.PORT || 4000
 

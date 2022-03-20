@@ -1,8 +1,7 @@
-import Datastore = require('nedb')
 import { Share } from '../datastores.types'
-import { DatabaseConnection } from './databaseConnection'
+import { DatabaseConnection } from './db'
 
-export class SharedDatabase extends DatabaseConnection<Share> {
+export class ShareDatabase extends DatabaseConnection<Share> {
   constructor() {
     super('share')
   }
@@ -21,14 +20,14 @@ export class SharedDatabase extends DatabaseConnection<Share> {
     this.connection.find({ collection_id: collection_id }, {}, callback)
   }
 
-  removeMultipleSharesByUserId(
+  removeMultipleByUserId(
     user_id: string,
     callback?: (err: Error, numRemoved: number) => void
   ) {
     this.connection.remove({ user_id: user_id }, { multi: true }, callback)
   }
 
-  removeMultipleSharesByCollectionId(
+  removeMultipleByCollectionId(
     collection_id: string,
     callback?: (err: Error, numRemoved: number) => void
   ) {

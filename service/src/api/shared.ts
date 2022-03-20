@@ -1,3 +1,3 @@
 import { Router } from 'express'
 
-export const sharedRouter = Router()
+export const router = Router()

@@ -15,13 +15,13 @@ export abstract class DatabaseConnection<T> {
     })
   }
 
-  create(item: T, callback?: (err: Error, doc: T) => void) {
+  create(item: T, callback?: (err: Error, doc?: T) => void) {
     this.connection.insert({ ...item, _id: undefined }, callback)
   }
 
   createMultiple(
     items: Array<T>,
-    callback?: (err: Error, docs: Array<T>) => void
+    callback?: (err: Error, docs?: Array<T>) => void
   ) {
     this.connection.insert(
       items.map((item) => ({ ...item, _id: undefined })),
@@ -40,7 +40,7 @@ export abstract class DatabaseConnection<T> {
   update(
     _id: string,
     item: T,
-    callback?: (err: Error, numOfUpdated: number) => void
+    callback?: (err: Error, numOfUpdated?: number) => void
   ) {
     this.connection.update(
       { _id: _id },
@@ -50,13 +50,13 @@ export abstract class DatabaseConnection<T> {
     )
   }
 
-  remove(_id: string, callback?: (err: Error, numRemoved: number) => void) {
+  remove(_id: string, callback?: (err: Error, numRemoved?: number) => void) {
     this.connection.remove({ _id: _id }, { multi: false }, callback)
   }
 
   removeMultiple(
     _ids: Array<string>,
-    callback?: (err: Error, numRemoved: number) => void
+    callback?: (err: Error, numRemoved?: number) => void
   ) {
     this.connection.remove({ _id: { $in: _ids } }, { multi: true }, callback)
   }

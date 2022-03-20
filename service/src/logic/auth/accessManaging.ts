@@ -1,4 +1,4 @@
-import { accessFilterIntervalMs } from '../../utils/constances'
+import { accessFilterIntervalMs } from '../../resources/constances'
 import { Access } from './class_access'
 
 let accesses: Array<Access> = []
@@ -14,11 +14,11 @@ export const startAccessManaging = () => {
 }
 
 export const existAccess = (access_token: string): boolean => {
-  console.log(access_token)
-  const search = accesses.find(
-    (access) => access.getAccessToken() === access_token
+  return (
+    accesses
+      .find((access) => access.getAccessToken() === access_token)
+      ?.checkValidity() ?? false
   )
-  return search ? search.checkValidity() : false
 }
 
 export const addNewAccess = (user_id: string): string => {
@@ -29,6 +29,7 @@ export const addNewAccess = (user_id: string): string => {
 
 export const removeAccess = (access_token: string) => {
   accesses.find((a) => a.getAccessToken() === access_token)?.remove()
+  console.log(accesses)
 }
 
 export const updateAccess = (access_token: string) => {
@@ -36,5 +37,5 @@ export const updateAccess = (access_token: string) => {
 }
 
 export const getUserIdByAccessToken = (access_token: string): string => {
-  return accesses.find((a) => a.getAccessToken() === access_token).getUserId()
+  return accesses.find((a) => a.getAccessToken() === access_token)?.getUserId()
 }

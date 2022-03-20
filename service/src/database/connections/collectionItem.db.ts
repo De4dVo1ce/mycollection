@@ -1,6 +1,5 @@
-import Datastore = require('nedb')
 import { CollectionItem } from '../datastores.types'
-import { DatabaseConnection } from './databaseConnection'
+import { DatabaseConnection } from './db'
 
 export class CollectionItemDatabase extends DatabaseConnection<CollectionItem> {
   constructor() {

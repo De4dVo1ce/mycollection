@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid'
-import { accessCheckIntervalMs, accessTtlMs } from '../../utils/constances'
+import { accessCheckIntervalMs, accessTtlMs } from '../../resources/constances'
 
 export class Access {
   /**
@@ -20,7 +20,8 @@ export class Access {
     this.timestamp = new Date().getTime()
     this.isValid = true
     this.timer = setInterval(() => {
-      this.isValid = new Date().getTime() - this.timestamp < accessTtlMs
+      this.isValid =
+        this.isValid && new Date().getTime() - this.timestamp < accessTtlMs
 
       if (this.isValid === false) {
         clearInterval(this.timer)
@@ -48,6 +49,6 @@ export class Access {
   }
 
   remove() {
-    this.isValid = true
+    this.isValid = false
   }
 }

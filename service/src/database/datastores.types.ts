@@ -1,5 +1,3 @@
-import Datastore = require('nedb')
-
 type DatastoreType = {
   _id: string
 }
@@ -23,6 +21,8 @@ export type Collection = DatastoreType & {
 type EnumType = string | number
 
 export type CollectionCollumn = DatastoreType & {
+  user_id: string
+  collection_id: string
   index: number
   name: string
   title: string
