@@ -1,11 +1,12 @@
 import { Router } from 'express'
-import { statusCodes } from '../resources/constances'
+import { statusCodes } from '../resources/statusCodes'
 import {
   checkAccess,
   checkLoginData,
   createNewLoginData,
   logoutAccess,
 } from '../logic/auth/authentication'
+import { getUser } from '../logic/user/user'
 
 export const router = Router()
 
@@ -14,8 +15,17 @@ router.get('/status', (req, res) => {
   const access_token = headers.authorization
 
   if (access_token) {
-    checkAccess(access_token, (isValid) => {
-      res.status(isValid ? statusCodes.OK : statusCodes.UNAUTHORIZED).end()
+    checkAccess(access_token, (isValid, user_id) => {
+      getUser(user_id, (err, user) => {
+        if (err) {
+          res.status(statusCodes.INTERNAL_SERVER_ERROR).end()
+          return
+        }
+
+        res
+          .status(isValid ? statusCodes.OK : statusCodes.UNAUTHORIZED)
+          .json({ user: user })
+      })
     })
   } else {
     res.status(statusCodes.BAD_REQUEST).end()
@@ -52,7 +62,7 @@ router.post('/login', (req, res) => {
   const password = body.password
 
   if (name && password) {
-    checkLoginData(name, password, (err, user, access_token) => {
+    checkLoginData(name, password, false, (err, user, access_token) => {
       if (err) {
         res.status(statusCodes.INTERNAL_SERVER_ERROR).end()
         return
@@ -77,20 +87,11 @@ router.post('/logout', (req, res) => {
   const headers = req.headers
   const access_token = headers.authorization
 
-  const body = req.body
-  const user_id = body.user_id
-
-  checkAccess(access_token, (isValid, access_owner_id) => {
-    if (!access_token || !isValid) {
-      res.status(statusCodes.BAD_REQUEST).end()
-      return
-    }
-
-    if (access_owner_id !== user_id) {
-      res.status(statusCodes.UNAUTHORIZED).end()
-      return
-    }
-
+  if (!access_token) {
+    res.status(statusCodes.BAD_REQUEST).end()
+    return
+  }
+  checkAccess(access_token, () => {
     logoutAccess(access_token, () => {
       res.status(statusCodes.OK).end()
     })

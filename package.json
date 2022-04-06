@@ -10,6 +10,9 @@
     "postinstall": "yarn run install:app && yarn run install:service",
     "start:app": "yarn --cwd app run start",
     "start:service": "yarn --cwd service run start",
-    "start": "concurrently \"yarn run start:app\" \"yarn run start:service\""
+    "start": "concurrently \"yarn run start:app\" \"yarn run start:service\"",
+    "debug:app": "yarn --cwd app run debug",
+    "debug:service": "yarn --cwd service run debug",
+    "debug": "concurrently \"yarn run debug:app\" \"yarn run debug:service\""
   }
 }

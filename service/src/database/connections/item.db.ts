@@ -1,9 +1,9 @@
 import { CollectionItem } from '../datastores.types'
 import { DatabaseConnection } from './db'
 
-export class CollectionItemDatabase extends DatabaseConnection<CollectionItem> {
+export class ItemDatabase extends DatabaseConnection<CollectionItem> {
   constructor() {
-    super('collectionItem')
+    super('item')
   }
 
   getAllByCollectionId(
@@ -22,5 +22,12 @@ export class CollectionItemDatabase extends DatabaseConnection<CollectionItem> {
       { multi: true },
       callback
     )
+  }
+
+  removeAllByUserId(
+    user_id: string,
+    callback?: (err: Error, numRemoved: number) => void
+  ) {
+    this.connection.remove({ user_id: user_id }, { multi: true }, callback)
   }
 }

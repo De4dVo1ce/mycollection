@@ -1,18 +1,21 @@
 import { Router } from 'express'
 import {
   createCollection,
+  getAllCollectionsByUserId,
   getCollection,
   removeCollection,
   updateCollection,
 } from '../logic/collection/collection'
 import { checkAccess } from '../logic/auth/authentication'
-import { statusCodes } from '../resources/constances'
+import { statusCodes } from '../resources/statusCodes'
 import { Collection } from '../database/datastores.types'
-import { router as collumnRouter } from './collectionCollumns'
+import { router as columnRouter } from './columns'
+import { router as itemsRouter } from './items'
 
 export const router = Router()
 
-router.use('', collumnRouter)
+router.use('', columnRouter)
+router.use('', itemsRouter)
 
 router.post('/new', (req, res) => {
   const headers = req.headers
@@ -43,6 +46,35 @@ router.post('/new', (req, res) => {
   }
 })
 
+router.get('', (req, res) => {
+  const headers = req.headers
+  const access_token = headers.authorization
+
+  const missingParams: Array<any> = [access_token].filter((param) => !param)
+
+  if (missingParams.length === 0) {
+    checkAccess(access_token, (isValid, access_owner_id) => {
+      if (!isValid) {
+        res.status(statusCodes.UNAUTHORIZED).end()
+        return
+      }
+
+      getAllCollectionsByUserId(access_owner_id, (err, collections) => {
+        if (err) {
+          res.status(statusCodes.INTERNAL_SERVER_ERROR).end()
+          return
+        }
+
+        collections.sort((c1, c2) => c1.created - c2.created)
+
+        res.status(statusCodes.OK).json({ collections: collections })
+      })
+    })
+  } else {
+    res.status(statusCodes.BAD_REQUEST).end()
+  }
+})
+
 router.get('/:collectionId', (req, res) => {
   const headers = req.headers
   const access_token = headers.authorization
@@ -58,7 +90,7 @@ router.get('/:collectionId', (req, res) => {
       }
 
       getCollection(collectionId, (err, collection) => {
-        if (!err) {
+        if (err) {
           res.status(statusCodes.INTERNAL_SERVER_ERROR).end()
           return
         }
@@ -68,7 +100,7 @@ router.get('/:collectionId', (req, res) => {
           return
         }
 
-        res.status(statusCodes.OK).json({ colelction: collection })
+        res.status(statusCodes.OK).json({ collection: collection })
       })
     })
   } else {

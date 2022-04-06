@@ -1,5 +1,7 @@
 import { Collection } from '../../database/datastores.types'
 import { datastorePool } from '../../database/loadDatabases'
+import { removeColumnsByCollectionId } from './collectionColumn'
+import { removeAllItemsByCollectionId } from './collectionItem'
 
 export const createCollection = (
   collection: Collection,
@@ -34,7 +36,21 @@ export const removeCollection = (
   collection_id: string,
   callback: (err: Error, numRemoved?: number) => void
 ) => {
-  datastorePool.collection.remove(collection_id, callback)
+  removeColumnsByCollectionId(collection_id, (err) => {
+    if (err) {
+      callback(err)
+      return
+    }
+
+    removeAllItemsByCollectionId(collection_id, (err) => {
+      if (err) {
+        callback(err)
+        return
+      }
+
+      datastorePool.collection.remove(collection_id, callback)
+    })
+  })
 }
 
 export const removeCollectionsByUserId = (

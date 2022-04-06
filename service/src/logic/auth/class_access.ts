@@ -20,8 +20,8 @@ export class Access {
     this.timestamp = new Date().getTime()
     this.isValid = true
     this.timer = setInterval(() => {
-      this.isValid =
-        this.isValid && new Date().getTime() - this.timestamp < accessTtlMs
+      const now = new Date().getTime()
+      this.isValid = this.isValid && now - this.timestamp < accessTtlMs
 
       if (this.isValid === false) {
         clearInterval(this.timer)

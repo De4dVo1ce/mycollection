@@ -33,6 +33,13 @@ export const removeItem = (item_id: string, callback: (err: Error) => void) => {
   datastorePool.collectionItem.remove(item_id, callback)
 }
 
+export const removeAllItemsByUserId = (
+  user_id: string,
+  callback: (err: Error) => void
+) => {
+  datastorePool.collectionItem.removeAllByUserId(user_id, callback)
+}
+
 export const removeAllItemsByCollectionId = (
   collection_id: string,
   callback: (err: Error) => void

@@ -1,42 +1,50 @@
-import { CollectionCollumn } from '../datastores.types'
+import { CollectionColumn } from '../datastores.types'
 import { DatabaseConnection } from './db'
 
-export class CollectionCollumnDatabase extends DatabaseConnection<CollectionCollumn> {
+export class ColumnDatabase extends DatabaseConnection<CollectionColumn> {
   constructor() {
-    super('collectionCollumn')
+    super('column')
   }
 
   getAllByCollectionId(
     collection_id: string,
-    callback?: (err: Error, docs: Array<CollectionCollumn>) => void
+    callback?: (err: Error, docs: Array<CollectionColumn>) => void
   ) {
     this.connection.find({ collection_id: collection_id }, {}, callback)
   }
 
-  updateByCollectionId(
-    collumn_id: string,
+  updateWithCollectionId(
+    column_id: string,
     collection_id: string,
-    collumn: CollectionCollumn,
+    column: CollectionColumn,
     callback: (err: Error, numUpdated: number) => void
   ) {
+    const dateTime = Date.now()
     this.connection.update(
-      { _id: collumn_id, collection_id: collection_id },
-      { $set: { ...collumn } },
+      { _id: column_id, collection_id: collection_id },
+      { $set: { ...column, modified: dateTime } },
       {},
       callback
     )
   }
 
-  removeByCollectionId(
-    collumn_id: string,
+  removeWithCollectionId(
+    column_id: string,
     collection_id: string,
     callback?: (err: Error, numRemoved: number) => void
   ) {
     this.connection.remove(
-      { _id: collumn_id, collection_id: collection_id },
+      { _id: column_id, collection_id: collection_id },
       { multi: false },
       callback
     )
+  }
+
+  removeAllByUserId(
+    user_id: string,
+    callback?: (err: Error, numRemoved: number) => void
+  ) {
+    this.connection.remove({ user_id: user_id }, { multi: true }, callback)
   }
 
   removeAllByCollectionId(

@@ -1,5 +1,10 @@
 import { User } from '../../database/datastores.types'
 import { datastorePool } from '../../database/loadDatabases'
+import { removeCollectionsByUserId } from '../collection/collection'
+import { removeColumnsByUserId } from '../collection/collectionColumn'
+import { removeAllItemsByUserId } from '../collection/collectionItem'
+import { removeSharesByUserId } from '../share/share'
+import { removeUserPwByUserId } from './userPw'
 
 export const createUser = (
   user: User,
@@ -31,8 +36,43 @@ export const updateUser = (
 }
 
 export const removeUser = (
-  usre_id: string,
+  user_id: string,
   callback: (err: Error, numRemoved?: number) => void
 ) => {
-  datastorePool.user.remove(usre_id, callback)
+  removeSharesByUserId(user_id, (err) => {
+    if (err) {
+      callback(err)
+      return
+    }
+
+    removeAllItemsByUserId(user_id, (err) => {
+      if (err) {
+        callback(err)
+        return
+      }
+
+      removeColumnsByUserId(user_id, (err) => {
+        if (err) {
+          callback(err)
+          return
+        }
+
+        removeCollectionsByUserId(user_id, (err) => {
+          if (err) {
+            callback(err)
+            return
+          }
+
+          removeUserPwByUserId(user_id, (err) => {
+            if (err) {
+              callback(err)
+              return
+            }
+
+            datastorePool.user.remove(user_id, callback)
+          })
+        })
+      })
+    })
+  })
 }

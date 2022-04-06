@@ -29,7 +29,6 @@ export const addNewAccess = (user_id: string): string => {
 
 export const removeAccess = (access_token: string) => {
   accesses.find((a) => a.getAccessToken() === access_token)?.remove()
-  console.log(accesses)
 }
 
 export const updateAccess = (access_token: string) => {

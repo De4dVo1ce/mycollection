@@ -10,17 +10,16 @@
     "@types/password-hash": "^1.2.21",
     "@types/uuid": "^8.3.4",
     "cors": "^2.8.5",
-    "express": "^4.17.2",
+    "express": "^4.17.3",
     "nedb": "^1.8.0",
     "nodemon": "^2.0.15",
     "password-hash": "^1.2.2",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.5",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3",
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "debug": "nodemon index.ts",
-    "serve": "pm2 start index.ts --watch",
+    "debug": "nodemon index.ts --watch",
     "start": "yarn run debug"
   }
 }

@@ -1,4 +1,4 @@
-import { User } from '../../database/datastores.types'
+import { User, User_PW } from '../../database/datastores.types'
 import { createUser, getUserByName, removeUser } from '../user/user'
 import { createUserPw, verifyPassword } from '../user/userPw'
 import {
@@ -20,17 +20,19 @@ export const createNewLoginData = (
       return
     }
 
-    createUser({ _id: undefined, name: name }, (err, user) => {
+    createUser({ _id: undefined, name: name } as User, (err, user) => {
       if (err) {
         callback(err)
         return
       }
 
       createUserPw(
-        { _id: undefined, user_id: user._id, password: password },
+        { _id: undefined, user_id: user._id, password: password } as User_PW,
         (err) => {
           if (err) {
-            removeUser(user._id, callback)
+            removeUser(user._id, (err) => {
+              callback(err)
+            })
             return
           }
 
@@ -44,6 +46,7 @@ export const createNewLoginData = (
 export const checkLoginData = (
   name: string,
   password: string,
+  justCheck: boolean,
   callback: (err: Error, user?: User, access_token?: string) => void
 ) => {
   getUserByName(name, (err, user) => {
@@ -56,7 +59,12 @@ export const checkLoginData = (
         callback(err, undefined)
         return
       }
-      callback(err, user, addNewAccess(user._id))
+
+      if (justCheck) {
+        callback(err)
+      } else {
+        callback(err, user, addNewAccess(user._id))
+      }
     })
   })
 }

@@ -16,15 +16,25 @@ export abstract class DatabaseConnection<T> {
   }
 
   create(item: T, callback?: (err: Error, doc?: T) => void) {
-    this.connection.insert({ ...item, _id: undefined }, callback)
+    const dateTime = Date.now()
+    this.connection.insert(
+      { _id: undefined, created: dateTime, modified: dateTime, ...item },
+      callback
+    )
   }
 
   createMultiple(
     items: Array<T>,
     callback?: (err: Error, docs?: Array<T>) => void
   ) {
+    const dateTime = Date.now()
     this.connection.insert(
-      items.map((item) => ({ ...item, _id: undefined })),
+      items.map((item) => ({
+        _id: undefined,
+        created: dateTime,
+        modified: dateTime,
+        ...item,
+      })),
       callback
     )
   }
@@ -42,9 +52,10 @@ export abstract class DatabaseConnection<T> {
     item: T,
     callback?: (err: Error, numOfUpdated?: number) => void
   ) {
+    const dateTime = Date.now()
     this.connection.update(
       { _id: _id },
-      { $set: item },
+      { $set: { ...item, modified: dateTime } },
       { multi: false },
       callback
     )
