@@ -7,10 +7,11 @@ import {
 import React from 'react'
 import { INVALID_SEARCH_CHARS_MAPPING } from '../../../components/AppBase'
 import { useWindowSize } from '../../../components/AppBase/WindowSizeProvider'
+import { labels } from '../../resources'
 
 interface SearchProps {
   searchFor: string
-  setSearch: (newSearch: string | undefined) => void
+  setSearch: (newSearch: string) => void
   searchForSelector?: React.ReactNode
 }
 
@@ -21,21 +22,25 @@ export const Search: React.FC<SearchProps> = ({
 }) => {
   const { isMobileView } = useWindowSize()
 
-  const onChange = (newSearch: string | undefined) => {
+  const [currentSearch, setCurrentSearch] = React.useState<string>('')
+
+  const onChange = (newSearch: string) => {
     let checkedSearch = newSearch
     if (checkedSearch !== undefined) {
       INVALID_SEARCH_CHARS_MAPPING.forEach((char) => {
-        if (checkedSearch !== undefined) {
-          while (checkedSearch.includes(char[0])) {
-            checkedSearch = checkedSearch.replace(char[0], char[1])
-          }
-        }
+        checkedSearch = checkedSearch.replaceAll(char[0], char[1])
       })
     }
+    checkedSearch.trim()
+    setCurrentSearch(checkedSearch)
+  }
 
-    checkedSearch?.trim()
+  const onSubmit = (event: any) => {
+    if (event) {
+      event.preventDefault()
+    }
 
-    setSearch(checkedSearch)
+    setSearch(currentSearch)
   }
 
   return (
@@ -51,14 +56,25 @@ export const Search: React.FC<SearchProps> = ({
     >
       <MuiInputBase
         sx={{ ml: 1, flex: 1 }}
-        placeholder={`Search ${searchFor}`}
-        inputProps={{ 'aria-label': 'search google maps' }}
+        placeholder={labels.SEARCH(searchFor)}
         onChange={(event) => {
           const newSearch = event.target.value
-          onChange(newSearch && newSearch.length > 0 ? newSearch : undefined)
+          onChange(newSearch)
+        }}
+        type="text"
+        onSubmit={onSubmit}
+        onKeyPress={(event) => {
+          if (event.key === 'Enter') {
+            onSubmit(event)
+          }
         }}
       />
-      <MuiIconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+      <MuiIconButton
+        type="button"
+        sx={{ p: '10px' }}
+        aria-label="search"
+        onClick={onSubmit}
+      >
         <SearchIcon />
       </MuiIconButton>
       {searchForSelector ?? null}

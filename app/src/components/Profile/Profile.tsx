@@ -1,5 +1,6 @@
 import React from 'react'
 import { Paper, Header } from '../../shared'
+import { ComingSoonText } from '../../shared/components/ComingSoonText'
 import { Page, documentNames } from '../AppBase'
 
 interface ProfileProps {}
@@ -9,7 +10,9 @@ const Profile: React.FC<ProfileProps> = () => {
   return (
     <Page>
       <Header text="Profile" variant="h4" />
-      <Paper></Paper>
+      <Paper>
+        <ComingSoonText />
+      </Paper>
     </Page>
   )
 }

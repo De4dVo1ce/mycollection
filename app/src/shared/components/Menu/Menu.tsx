@@ -73,7 +73,6 @@ export const Menu: React.FC<MenuProps> = ({
             {...entry}
             onClick={() => {
               handleClose()
-              console.log(entry.value)
               onClick(`${entry.value}`)
             }}
           >

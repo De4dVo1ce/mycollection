@@ -1,5 +1,14 @@
 import { datastorePool } from '../../database/loadDatabases'
-import { CollectionColumn } from '../../database/datastores.types'
+import {
+  CollectionColumn,
+  CollectionItem,
+} from '../../database/datastores.types'
+import {
+  createMultipleCollectionItems,
+  getAllCollectionItemsByCollectionId,
+  removeAllItemsByCollectionId,
+} from './collectionItem'
+import { areColumnsEqual, areEqual } from '../areEqual'
 
 export const createColumn = (
   collectionColumn: CollectionColumn,
@@ -31,27 +40,81 @@ export const getMultipleColumnsByCollectionId = (
 
 export const updateMultipleColumns = (
   collection_id: string,
-  columns: Array<CollectionColumn>,
-  callback: (err: Error, numUpdated?: number) => void
+  new_columns: Array<CollectionColumn>,
+  callback: (err: Error) => void
 ) => {
-  removeColumnsByCollectionId(collection_id, (err) => {
+  getMultipleColumnsByCollectionId(collection_id, (err, columns) => {
     if (err) {
       callback(err)
       return
     }
 
-    createMultipleColumns(
-      columns.map((column) => {
-        column.collection_id = collection_id
-        return column
-      }),
-      (err) => {
-        if (err) {
-          callback(err)
-          return
-        }
+    if (areColumnsEqual(new_columns, columns)) {
+      callback(undefined)
+      return
+    }
+
+    removeColumnsByCollectionId(collection_id, (err) => {
+      if (err) {
+        callback(err)
+        return
       }
-    )
+
+      createMultipleColumns(
+        new_columns.map((column) => {
+          column.collection_id = collection_id
+          return column
+        }),
+        (err) => {
+          if (err) {
+            callback(err)
+            return
+          }
+
+          getAllCollectionItemsByCollectionId(
+            collection_id,
+            '_id',
+            '',
+            (err, items) => {
+              if (err) {
+                callback(err)
+                return
+              }
+
+              const newItems: Array<CollectionItem> = []
+              items.forEach((item) => {
+                const newItem: CollectionItem = {
+                  _id: item._id,
+                  collection_id: item.collection_id,
+                  created: item.created,
+                } as CollectionItem
+                new_columns.forEach((column) => {
+                  let value = item[column.name] ?? ''
+                  if (
+                    column.type === 'enum' &&
+                    !column.enum.includes(`${value}`)
+                  ) {
+                    value = ''
+                  }
+                  newItem[column.name] = value
+                })
+
+                newItems.push(newItem)
+              })
+
+              removeAllItemsByCollectionId(collection_id, (err) => {
+                if (err) {
+                  callback(err)
+                  return
+                }
+
+                createMultipleCollectionItems(collection_id, newItems, callback)
+              })
+            }
+          )
+        }
+      )
+    })
   })
 }
 

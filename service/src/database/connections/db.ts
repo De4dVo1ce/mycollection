@@ -1,4 +1,5 @@
 import Datastore = require('nedb')
+import { DatastoreType } from '../datastores.types'
 
 export abstract class DatabaseConnection<T> {
   protected connection: Datastore<T>
@@ -15,23 +16,22 @@ export abstract class DatabaseConnection<T> {
     })
   }
 
-  create(item: T, callback?: (err: Error, doc?: T) => void) {
+  create(item: any, callback?: (err: Error, doc?: T) => void) {
     const dateTime = Date.now()
     this.connection.insert(
-      { _id: undefined, created: dateTime, modified: dateTime, ...item },
+      { created: dateTime, modified: dateTime, ...item },
       callback
     )
   }
 
   createMultiple(
-    items: Array<T>,
+    items: Array<T & DatastoreType>,
     callback?: (err: Error, docs?: Array<T>) => void
   ) {
     const dateTime = Date.now()
     this.connection.insert(
       items.map((item) => ({
-        _id: undefined,
-        created: dateTime,
+        created: item.created ?? dateTime,
         modified: dateTime,
         ...item,
       })),

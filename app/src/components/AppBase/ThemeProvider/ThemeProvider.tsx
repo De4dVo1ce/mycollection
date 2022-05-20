@@ -5,8 +5,8 @@ import { themes } from '../appValues'
 import { STORAGE_KEY_THEME } from '../resources'
 
 const getThemeSettingFromStorage = (): PaletteOptions => {
-  const storageSetting = getFromStorage(STORAGE_KEY_THEME) as PaletteOptions
-  return storageSetting ?? themes.light
+  const storageSetting = getFromStorage(STORAGE_KEY_THEME)
+  return storageSetting ? (storageSetting as PaletteOptions) : themes.light
 }
 
 interface ThemeContextType {

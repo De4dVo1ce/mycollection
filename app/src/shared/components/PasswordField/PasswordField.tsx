@@ -15,7 +15,7 @@ import {
 export interface PasswordFieldProps {
   index?: number
   autoFocus?: boolean
-  label: string
+  label?: string
   showPassword?: boolean
   password: string
   setPassword: (newPassword: string) => void
@@ -51,7 +51,7 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
         }}
         onKeyDown={onKeyPress}
         endAdornment={
-          showPassword ? (
+          showPassword && (
             <InputAdornment position="end">
               <IconButton onClick={onClickVisibility}>
                 {isVisible ? (
@@ -61,7 +61,7 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
                 )}
               </IconButton>
             </InputAdornment>
-          ) : undefined
+          )
         }
       />
     </FormControl>

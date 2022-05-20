@@ -16,5 +16,7 @@ export const HeaderTypography = styled(Typography)`
   && {
     width: 100%;
     font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
   }
 `

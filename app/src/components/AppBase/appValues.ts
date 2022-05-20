@@ -1,6 +1,15 @@
 import React from 'react'
 import { PaletteOptions } from '@mui/material'
 import type { RouteObject } from 'react-router-dom'
+import {
+  THEME_DARK_BACKGROUND_DEFAULT,
+  THEME_DARK_BACKGROUND_PAPER,
+  THEME_DARK_PRIMARY_MAIN,
+  THEME_LIGHT_BACKGROUND_DEFAULT,
+  THEME_LIGHT_BACKGROUND_PAPER,
+  THEME_LIGHT_PRIMARY_MAIN,
+  THEME_LIGHT_TEXT_PRIMARY,
+} from './resources'
 
 /**
  * Document name
@@ -12,7 +21,10 @@ export const documentNames = {
   register: `${appName} - Register`,
   logout: `${appName} - Logout`,
   collections: `${appName} - Collections`,
-  collection: (collectionName: string) => `${appName} - ${collectionName}`,
+  collection: (collectionName: string) => ({
+    page: `${appName} - ${collectionName}`,
+    edit: `${appName} - ${collectionName} - Edit`,
+  }),
   shared: `${appName} - Shared`,
   sharedCollection: (collectionName: string) =>
     collectionName.length > 0 ? `${appName} - ${collectionName}` : `${appName}`,
@@ -53,24 +65,24 @@ export const themes: CustomTheme = {
   light: {
     mode: 'light',
     primary: {
-      main: '#3f51b5',
+      main: THEME_LIGHT_PRIMARY_MAIN,
     },
     background: {
-      paper: '#ffffff',
-      default: '#eeeeee',
+      paper: THEME_LIGHT_BACKGROUND_PAPER,
+      default: THEME_LIGHT_BACKGROUND_DEFAULT,
     },
     text: {
-      primary: '#0a1929',
+      primary: THEME_LIGHT_TEXT_PRIMARY,
     },
   },
   dark: {
     mode: 'dark',
     primary: {
-      main: '#3f51b5',
+      main: THEME_DARK_PRIMARY_MAIN,
     },
     background: {
-      paper: '#555555',
-      default: '#000000',
+      paper: THEME_DARK_BACKGROUND_PAPER,
+      default: THEME_DARK_BACKGROUND_DEFAULT,
     },
   },
 }

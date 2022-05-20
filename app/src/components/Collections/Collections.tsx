@@ -1,88 +1,66 @@
 import { Add as AddIcon } from '@mui/icons-material'
-import { Divider } from '@mui/material'
+import { Divider as MuiDivider } from '@mui/material'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getCollections } from '../../connection/api.collection'
 import { createUrlFor } from '../../createUrlFor'
-import { Header, Loading, Paper } from '../../shared'
-import { Collection, statusCodes } from '../../shared'
+import { Header, labels, Loading, messages, Paper } from '../../shared'
 import { NothingHereDiv } from './Collections.styles'
 import { CollectionTile } from './CollectionTile'
-import { documentNames, NOTHING_HERE_COLLECTIONS, Page } from '../AppBase'
+import { documentNames, Page } from '../AppBase'
 import { useSnackbar } from '../AppBase/SnackbarProvider'
+import { useGetCollections } from '../../connection/api'
 
 interface CollectionsProps {}
 const Collections: React.FC<CollectionsProps> = () => {
   document.title = documentNames.collections
 
-  const [collections, setCollections] = React.useState<
-    Array<Collection> | undefined
-  >(undefined)
-
   const navigate = useNavigate()
-  const snackbar = useSnackbar()
+  const { setSnackbar } = useSnackbar()
 
-  const getCollectionsList = React.useCallback(
-    async () => {
-      await getCollections((status, collections) => {
-        switch (status) {
-          case statusCodes.OK:
-            setCollections(collections)
-            break
-          case statusCodes.UNAUTHORIZED:
-            navigate(createUrlFor().logout)
-            break
-          default:
-            snackbar.setSnackbar('Something went wrong.', 'error')
-            break
-        }
-      })
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+  const { loading, collections } = useGetCollections(
+    document.location.pathname,
+    true,
+    (status) => {
+      setSnackbar(messages.SOMETHING_WENT_WRONG(status), 'error')
+    }
   )
 
-  React.useEffect(
-    () => {
-      getCollectionsList()
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
+  const onCreateClick = () => {
+    navigate(createUrlFor().collections.new)
+  }
 
   return (
     <Page>
       <Header
-        text="Collections"
+        text={labels.HEADER_COLLECTIONS}
         variant="h4"
         primary={{
           type: 'button',
           props: {
+            text: labels.BUTTON_CREATE,
             startIcon: <AddIcon />,
-            children: 'Create',
+            onClick: onCreateClick,
           },
         }}
       />
       <Paper>
-        {collections ? (
-          collections.length > 0 ? (
-            collections.map((collection, index) => (
-              <div key={index}>
-                <CollectionTile collection={collection} />
-                {index < collections.length - 1 && (
-                  <Divider
-                    orientation="horizontal"
-                    variant="middle"
-                    sx={{ mx: 0, my: 2 }}
-                  />
-                )}
-              </div>
-            ))
-          ) : (
-            <NothingHereDiv>{NOTHING_HERE_COLLECTIONS}</NothingHereDiv>
-          )
-        ) : (
+        {loading || !collections ? (
           <Loading />
+        ) : collections.length > 0 ? (
+          collections.map((collection, index) => (
+            <div key={index}>
+              <CollectionTile collection={collection} />
+              {index < collections.length - 1 && (
+                <MuiDivider
+                  orientation="horizontal"
+                  variant="middle"
+                  sx={{ mx: 0, my: 2 }}
+                />
+              )}
+            </div>
+          ))
+        ) : (
+          <NothingHereDiv>{messages.COLLECTIONS_NOTHING_HERE}</NothingHereDiv>
         )}
       </Paper>
     </Page>

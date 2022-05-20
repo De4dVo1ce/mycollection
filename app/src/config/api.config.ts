@@ -1,15 +1,19 @@
+import { ENV } from './app.config'
+
+const SERVICE_PORT = ENV.SERVICEPORT
+
 interface ApiConfig {
   url: string
   port: number
 }
 
 export const apiConfig = (): ApiConfig => ({
-  url: window.location.origin.replace(`:${window.location.port}`, ``),
-  port: 4001,
+  url: document.location.origin.replace(`:${document.location.port}`, ``),
+  port: SERVICE_PORT,
 })
 
-export const requestInitTemplate = (): RequestInit => ({
-  method: 'GET',
+export const requestInitTemplate = (method: string): RequestInit => ({
+  method: method,
   mode: 'cors',
   cache: 'no-cache',
   credentials: 'same-origin',

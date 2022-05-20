@@ -1,8 +1,7 @@
 import { AccessToken } from '../components/AppBase/appValues'
 import { STORAGE_KEY_ACCESS_TOKEN } from '../components/AppBase/resources'
-import { CollectionColumn } from '../shared/resources/datastores.types'
-import { getFromStorage } from '../shared/resources/storage'
-import { requestInitTemplate } from './api.config'
+import { CollectionColumn, getFromStorage } from '../shared'
+import { requestInitTemplate } from '../config/api.config'
 import { createApiUrlFor } from './createApiUrlFor'
 
 export const getCollectionColumns = async (
@@ -13,8 +12,7 @@ export const getCollectionColumns = async (
     STORAGE_KEY_ACCESS_TOKEN
   ) as AccessToken
 
-  const requestInit: any = requestInitTemplate()
-  requestInit.method = 'GET'
+  const requestInit: any = requestInitTemplate('GET')
   requestInit.headers!.authorization = access_token
 
   const url = createApiUrlFor().columns(collection_id)
@@ -31,17 +29,20 @@ export const getCollectionColumns = async (
   callback(status, json.columns)
 }
 
-export const updateCollectionColumn = async (
+export const updateCollectionColumns = async (
   collection_id: string,
+  columns: Array<CollectionColumn>,
   callback: (status: number) => void
 ) => {
   const { access_token } = getFromStorage(
     STORAGE_KEY_ACCESS_TOKEN
   ) as AccessToken
 
-  const requestInit: any = requestInitTemplate()
-  requestInit.method = 'POST'
+  const requestInit: any = requestInitTemplate('POST')
   requestInit.headers!.authorization = access_token
+
+  const body = { columns: columns }
+  requestInit.body = JSON.stringify(body)
 
   const url = createApiUrlFor().columns(collection_id)
 

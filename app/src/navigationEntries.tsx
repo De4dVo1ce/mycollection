@@ -39,7 +39,7 @@ export const navigationEntries: Array<NavigationEntry> = [
   {
     id: 'shared',
     title: 'Shared',
-    path: createUrlFor().shared.page,
+    path: createUrlFor().shares.page,
     icon: <Share />,
     showLoggedOut: false,
     showLoggedIn: true,

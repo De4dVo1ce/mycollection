@@ -2,7 +2,7 @@ import React from 'react'
 import { Navigate } from 'react-router-dom'
 import { logout } from '../../../connection/api.auth'
 import { createUrlFor } from '../../../createUrlFor'
-import { Loading, Header, statusCodes } from '../../../shared'
+import { Loading, Header, statusCodes, messages, labels } from '../../../shared'
 import { documentNames, Global } from '../appValues'
 import { useAuth } from '../AuthProvider'
 import { LoginLogoutPage } from '../LoginLogoutPage'
@@ -16,7 +16,7 @@ export const Logout: React.FC<LogoutProps> = () => {
   const [loggedOut, setLoggedOut] = React.useState<boolean>(false)
 
   const auth = useAuth()
-  const snackbar = useSnackbar()
+  const { setSnackbar } = useSnackbar()
 
   const onLogout = React.useCallback(
     async () => {
@@ -29,7 +29,7 @@ export const Logout: React.FC<LogoutProps> = () => {
             })
             break
           default:
-            snackbar.setSnackbar('Something went wrong.', 'error')
+            setSnackbar(messages.SOMETHING_WENT_WRONG(status), 'error')
             break
         }
       })
@@ -50,9 +50,9 @@ export const Logout: React.FC<LogoutProps> = () => {
     <Navigate to={createUrlFor().login} state={undefined} />
   ) : (
     <LoginLogoutPage>
-      <Header text="Logout" variant="h4" />
+      <Header text={labels.HEADER_LOGOUT} variant="h4" />
       <LoginLogoutPaper>
-        <div>You are going to be logged out.</div>
+        <div>{messages.LOGGING_OUT}</div>
         <Loading />
       </LoginLogoutPaper>
     </LoginLogoutPage>

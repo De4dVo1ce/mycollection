@@ -1,5 +1,6 @@
 import React from 'react'
 import { Paper, Header } from '../../shared'
+import { ComingSoonText } from '../../shared/components/ComingSoonText'
 import { Page, documentNames } from '../AppBase'
 
 interface SharedProps {}
@@ -9,7 +10,9 @@ const Shared: React.FC<SharedProps> = () => {
   return (
     <Page>
       <Header text="Shared" variant="h4" />
-      <Paper></Paper>
+      <Paper>
+        <ComingSoonText />
+      </Paper>
     </Page>
   )
 }

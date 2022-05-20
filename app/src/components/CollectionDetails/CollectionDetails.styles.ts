@@ -4,7 +4,7 @@ export const TableSettingDiv = styled.div`
   && {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 16px;
     margin-bottom: 16px;
     width: 100%;
   }

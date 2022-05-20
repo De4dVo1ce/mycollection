@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { register } from '../../../connection/api.auth'
 import { createUrlFor } from '../../../createUrlFor'
 import {
-  DeviderBox,
+  DividerBox,
   Header,
+  labels,
+  messages,
   PasswordField,
   statusCodes,
   TextField,
@@ -25,34 +27,38 @@ export const Register: React.FC<RegisterProps> = () => {
   const [passwordConfirm, setPasswordConfirm] = React.useState<string>('')
 
   const navigate = useNavigate()
-  const snackbarContext = useSnackbar()
+  const { setSnackbar } = useSnackbar()
 
   const passwordConfirmed = password.localeCompare(passwordConfirm) === 0
   const canRegister =
     [username, password].filter((str) => str.length === 0).length === 0 &&
     passwordConfirmed
 
-  const onRegister = async (username: string, password: string) => {
-    await register(username, password, (status) => {
-      switch (status) {
-        case statusCodes.CREATED:
-          snackbarContext.setSnackbar('Registered', 'success')
-          navigate(createUrlFor().login, { replace: true })
-          break
+  const onRegister = React.useCallback(
+    async (username: string, password: string) => {
+      await register(username, password, (status) => {
+        switch (status) {
+          case statusCodes.CREATED:
+            setSnackbar(messages.REGISTERED, 'success')
+            navigate(createUrlFor().login, { replace: false })
+            break
 
-        case statusCodes.CONFLICT:
-          setErrorText('Username already exists.')
-          break
+          case statusCodes.CONFLICT:
+            setErrorText(messages.USERNAME_ARLEADY_EXISTS)
+            break
 
-        default:
-          setErrorText(`Something went wrong. Try again. [${status}]`)
-          break
-      }
+          default:
+            setErrorText(messages.SOMETHING_WENT_WRONG(status))
+            break
+        }
 
-      setPassword('')
-      setPasswordConfirm('')
-    })
-  }
+        setPassword('')
+        setPasswordConfirm('')
+      })
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
 
   const onPressEnter = (event: any) => {
     if (event.key === 'Enter' && canRegister) {
@@ -62,14 +68,14 @@ export const Register: React.FC<RegisterProps> = () => {
 
   return (
     <LoginLogoutPage>
-      <Header text="Register" variant="h4" />
+      <Header text={labels.HEADER_REGISTER} variant="h4" />
       <LoginLogoutPaper>
         <div style={{ color: 'red', fontWeight: 'bold' }}>
           <span>{errorText}</span>
         </div>
         <TextField
           autoFocus
-          label="Username"
+          label={labels.LABEL_USERNAME}
           fullWidth
           value={username}
           setValue={setUserName}
@@ -77,22 +83,22 @@ export const Register: React.FC<RegisterProps> = () => {
         />
         <PasswordField
           index={0}
-          label="Password"
+          label={labels.LABEL_PASSWORD}
           showPassword
           password={password}
           setPassword={setPassword}
           onKeyPress={onPressEnter}
         />
-        <DeviderBox />
+        <DividerBox />
         <PasswordField
           index={1}
-          label="Confirm Password"
+          label={labels.LABEL_PASSWORD_CONFRIM}
           showPassword
           password={passwordConfirm}
           setPassword={setPasswordConfirm}
           onKeyPress={onPressEnter}
         />
-        <DeviderBox />
+        <DividerBox />
         <Button
           variant="contained"
           onClick={() => {
@@ -101,7 +107,7 @@ export const Register: React.FC<RegisterProps> = () => {
           color="primary"
           disabled={!canRegister}
         >
-          {'Register'}
+          {labels.BUTTON_REGISTER}
         </Button>
       </LoginLogoutPaper>
     </LoginLogoutPage>

@@ -26,7 +26,7 @@ const WindowSizeProvider: React.FC<WindowSizeProviderProps> = ({
   })
   React.useEffect(() => {
     // Handler to call on window resize
-    function handleResize() {
+    const handleResize = () => {
       // Set window width/height to state
       setWindowSize({
         width: window.innerWidth,
@@ -43,7 +43,7 @@ const WindowSizeProvider: React.FC<WindowSizeProviderProps> = ({
 
   const value: WindowSizeContextType = {
     windowSize,
-    isMobileView: windowSize.width <= MAX_WIDTH_MOBILE_VIEW,
+    isMobileView: window.innerWidth <= MAX_WIDTH_MOBILE_VIEW,
   }
 
   return (

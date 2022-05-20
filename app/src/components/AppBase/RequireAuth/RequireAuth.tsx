@@ -8,7 +8,7 @@ export const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
   const auth = useAuth()
   const location = useLocation()
 
-  if (!auth.user) {
+  if (auth.user === undefined) {
     return (
       <Navigate to={createUrlFor().login} state={{ from: location }} replace />
     )

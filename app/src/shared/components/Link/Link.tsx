@@ -1,5 +1,6 @@
 import { Link as MuiLink } from '@mui/material'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { LinkDiv } from './Link.styles'
 
 interface LinkProps {
@@ -7,10 +8,16 @@ interface LinkProps {
 }
 
 export const Link: React.FC<LinkProps> = ({ to, children }) => {
+  const navigate = useNavigate()
+
+  const onClick = () => {
+    navigate(to, { replace: false })
+  }
+
   return (
     <LinkDiv>
       <MuiLink
-        href={to}
+        onClick={onClick}
         underline="hover"
         color="inherit"
         sx={{ display: 'inline-block' }}

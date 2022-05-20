@@ -21,7 +21,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
           : 'start'
       }
     >
-      <MuiButton {...props}>{props.children}</MuiButton>
+      <MuiButton {...props} />
     </Stack>
   )
 }

@@ -1,4 +1,3 @@
 export * from './datastores.types'
-export * from './orderBy'
+export * from './texts'
 export * from './statusCodes'
-export * from './storage'

@@ -1,19 +1,16 @@
 import { AccessToken } from '../components/AppBase/appValues'
 import { STORAGE_KEY_ACCESS_TOKEN } from '../components/AppBase/resources'
-import { User } from '../shared/resources/datastores.types'
-import { getFromStorage } from '../shared/resources/storage'
-import { requestInitTemplate } from './api.config'
+import { User, getFromStorage } from '../shared'
+import { requestInitTemplate } from '../config/api.config'
 import { createApiUrlFor } from './createApiUrlFor'
 
 export const status = async (
   callback: (status: number, user?: User) => void
 ) => {
-  const { access_token } = getFromStorage(
-    STORAGE_KEY_ACCESS_TOKEN
-  ) as AccessToken
+  const { access_token } = (getFromStorage(STORAGE_KEY_ACCESS_TOKEN) ??
+    {}) as AccessToken
 
-  const requestInit: any = requestInitTemplate()
-  requestInit.method = 'GET'
+  const requestInit: any = requestInitTemplate('GET')
   requestInit.headers!.authorization = access_token
 
   const url = createApiUrlFor().status
@@ -33,8 +30,7 @@ export const register = async (
   password: string,
   callback: (status: number) => void
 ) => {
-  const requestInit: RequestInit = requestInitTemplate()
-  requestInit.method = 'POST'
+  const requestInit: RequestInit = requestInitTemplate('POST')
 
   const body = {
     name: username,
@@ -56,8 +52,7 @@ export const login = async (
   password: string,
   callback: (status: number, access_token: string, user: User) => void
 ) => {
-  const requestInit: RequestInit = requestInitTemplate()
-  requestInit.method = 'POST'
+  const requestInit: RequestInit = requestInitTemplate('POST')
 
   const body = {
     name: username,
@@ -82,8 +77,7 @@ export const logout = async (callback: (status: number) => void) => {
     STORAGE_KEY_ACCESS_TOKEN
   ) as AccessToken
 
-  const requestInit: any = requestInitTemplate()
-  requestInit.method = 'POST'
+  const requestInit: any = requestInitTemplate('POST')
   requestInit.headers!.authorization = access_token
 
   const url = createApiUrlFor().logout

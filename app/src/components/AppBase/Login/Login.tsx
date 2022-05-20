@@ -4,12 +4,15 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { login } from '../../../connection/api.auth'
 import { createUrlFor } from '../../../createUrlFor'
 import {
-  DeviderBox,
+  DividerBox,
   Header,
   PasswordField,
   TextField,
   setToStorage,
   statusCodes,
+  messages,
+  labels,
+  areEqual,
 } from '../../../shared'
 import { useAuth } from '../AuthProvider'
 import { LoginLogoutPage } from '../LoginLogoutPage'
@@ -21,8 +24,6 @@ import { documentNames } from '../appValues'
 interface LoginProps {}
 
 export const Login: React.FC<LoginProps> = () => {
-  document.title = documentNames.login
-
   const [errorText, setErrorText] = React.useState<string>('')
   const [username, setUserName] = React.useState<string>('')
   const [password, setPassword] = React.useState<string>('')
@@ -31,7 +32,7 @@ export const Login: React.FC<LoginProps> = () => {
   const locationState = location.state as { from: { pathname: string } }
 
   const navigate = useNavigate()
-  const snackbarContext = useSnackbar()
+  const { setSnackbar } = useSnackbar()
   const auth = useAuth()
 
   const onLogin = React.useCallback(
@@ -40,10 +41,7 @@ export const Login: React.FC<LoginProps> = () => {
         switch (status) {
           case statusCodes.OK:
             auth.signin(user, () => {
-              snackbarContext.setSnackbar(
-                `Logged in as ${user.name}`,
-                'success'
-              )
+              setSnackbar(messages.LOGGED_IN(user.name), 'success')
               setToStorage(STORAGE_KEY_ACCESS_TOKEN, {
                 access_token: access_token,
               })
@@ -62,16 +60,24 @@ export const Login: React.FC<LoginProps> = () => {
             break
 
           case statusCodes.NOT_FOUND:
-            setErrorText('Username or password not correct.')
+            setErrorText(messages.USERNAME_PASSWORD_NOT_CORRECT)
             break
 
           default:
-            setErrorText(`Something went wrong. Try again. [${status}]`)
+            setErrorText(messages.SOMETHING_WENT_WRONG(status))
             break
         }
 
         setPassword('')
       })
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [locationState]
+  )
+
+  React.useEffect(
+    () => {
+      document.title = documentNames.login
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -81,7 +87,9 @@ export const Login: React.FC<LoginProps> = () => {
     () => {
       if (auth.user) {
         navigate(
-          locationState?.from.pathname ?? createUrlFor().collections.page,
+          !areEqual(locationState?.from.pathname, createUrlFor().login)
+            ? locationState?.from.pathname ?? createUrlFor().collections.page
+            : createUrlFor().collections.page,
           {
             replace: true,
           }
@@ -89,7 +97,7 @@ export const Login: React.FC<LoginProps> = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [locationState]
   )
 
   const canLogin =
@@ -103,27 +111,27 @@ export const Login: React.FC<LoginProps> = () => {
 
   return (
     <LoginLogoutPage>
-      <Header text="Login" variant="h4" />
+      <Header text={labels.HEADER_LOGIN} variant="h4" />
       <LoginLogoutPaper>
         <div style={{ color: 'red', fontWeight: 'bold' }}>
           <span>{errorText}</span>
         </div>
         <TextField
           autoFocus
-          label="Username"
+          label={labels.LABEL_USERNAME}
           fullWidth
           value={username}
           setValue={setUserName}
           onKeyPress={onPressEnter}
         />
         <PasswordField
-          label="Password"
+          label={labels.LABEL_PASSWORD}
           showPassword
           password={password}
           setPassword={setPassword}
           onKeyPress={onPressEnter}
         />
-        <DeviderBox />
+        <DividerBox />
         <Button
           variant="contained"
           onClick={() => {
@@ -132,7 +140,7 @@ export const Login: React.FC<LoginProps> = () => {
           color="primary"
           disabled={!canLogin}
         >
-          {'Login'}
+          {labels.BUTTON_LOGIN}
         </Button>
       </LoginLogoutPaper>
     </LoginLogoutPage>

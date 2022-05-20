@@ -1,4 +1,4 @@
-type DatastoreType = {
+export type DatastoreType = {
   _id: string
   created: number
   modified: number
@@ -20,7 +20,8 @@ export type Collection = DatastoreType & {
   count: number
 }
 
-type EnumType = string | number
+export type ValueType = 'string' | 'number'
+export type ColumnType = 'string' | 'number' | 'enum' | 'flag'
 
 export type CollectionColumn = DatastoreType & {
   collection_id: string
@@ -28,17 +29,23 @@ export type CollectionColumn = DatastoreType & {
   name: string
   title: string
   default_order_by: boolean
-  show_in_list: boolean
+  show_in_desktop: boolean
+  show_in_mobile: boolean
   sortable: boolean
   searchable: boolean
 } & (
     | {
-        type: 'number' | 'string'
+        type: ValueType
       }
     | {
         type: 'enum'
-        enum_type: 'number' | 'string'
-        enum: Array<EnumType>
+        enum_type: ValueType
+        enum: Array<string>
+      }
+    | {
+        type: 'flag'
+        flag_type: ValueType
+        flag: Array<string>
       }
   )
 
@@ -49,5 +56,5 @@ export type Share = DatastoreType & {
 
 export type CollectionItem = DatastoreType & {
   collection_id: string
-  [key: string]: string | number
+  [key: string]: string | Array<string>
 }

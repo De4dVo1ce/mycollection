@@ -5,7 +5,8 @@ import {
   TableRow as MUITableRow,
   TableSortLabel as MUITableSortLabel,
 } from '@mui/material'
-import { CollectionTableColumn, SortOrder } from './CollectionTable.types'
+import { CollectionTableColumn } from './CollectionTable.types'
+import { SortOrder } from '../../utils'
 
 export interface CollectionTableHeaderProps {
   columns: Array<CollectionTableColumn>
@@ -36,8 +37,7 @@ const CollectionTableHeader: React.FC<CollectionTableHeaderProps> = ({
             style={{
               padding: '0px 10px',
               height: '40px',
-              //minWidth: column.minWidth ? column.minWidth : 'auto',
-              //width: column.width ? column.width : 'auto',
+              textAlign: 'left',
             }}
             variant="head"
           >

@@ -7,8 +7,18 @@ const CollectionsPage = React.lazy(
   () => import('./components/Collections/Collections')
 )
 const CollectionDetailsPage = React.lazy(
-  () => import('./components/Collections/CollectionDetails/CollectionDetails')
+  () => import('./components/CollectionDetails/CollectionDetails')
 )
+const CollectionNewPage = React.lazy(
+  () => import('./components/CollectionNewEdit/CollectionNew')
+)
+const CollectionEditPage = React.lazy(
+  () => import('./components/CollectionNewEdit/CollectionEdit')
+)
+const ItemDetailsPage = React.lazy(
+  () => import('./components/ItemDetails/ItemDetails')
+)
+const NewItemPage = React.lazy(() => import('./components/ItemDetails/NewItem'))
 const SharedPage = React.lazy(() => import('./components/Shared/Shared'))
 const ProfilePage = React.lazy(() => import('./components/Profile/Profile'))
 const SettingsPage = React.lazy(() => import('./components/Settings/Settings'))
@@ -26,13 +36,35 @@ export const routingEntries: Array<RoutingEntry> = [
   },
   {
     authRequired: true,
+    element: <CollectionNewPage />,
+    path: createUrlFor().collections.new,
+  },
+  {
+    authRequired: true,
     element: <CollectionDetailsPage />,
     path: createUrlFor().collections.withId(`:collectionId`).page,
   },
   {
     authRequired: true,
+    element: <CollectionEditPage />,
+    path: createUrlFor().collections.withId(`:collectionId`).edit,
+  },
+  {
+    authRequired: true,
+    element: <NewItemPage />,
+    path: createUrlFor().collections.withId(`:collectionId`).items.new,
+  },
+  {
+    authRequired: true,
+    element: <ItemDetailsPage />,
+    path: createUrlFor()
+      .collections.withId(`:collectionId`)
+      .items.withId(`:itemId`),
+  },
+  {
+    authRequired: true,
     element: <SharedPage />,
-    path: createUrlFor().shared.page,
+    path: createUrlFor().shares.page,
   },
   {
     authRequired: true,

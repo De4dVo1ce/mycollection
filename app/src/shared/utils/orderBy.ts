@@ -1,5 +1,6 @@
-import { SortOrder } from '../components/CollectionTable'
-import { CollectionColumn, CollectionItem } from './datastores.types'
+import { CollectionColumn, CollectionItem, ColumnType } from '../resources'
+
+export type SortOrder = 'asc' | 'desc'
 
 const orderByString = (
   orderBy: string,
@@ -28,7 +29,7 @@ const orderByNumber = (
   itemB: CollectionItem,
   defaultOrderBy?: CollectionColumn
 ): number => {
-  const value = (itemA[orderBy] as number) - (itemB[orderBy] as number)
+  const value = (+itemA[orderBy] as number) - (+itemB[orderBy] as number)
   return value !== 0
     ? value
     : defaultOrderBy
@@ -81,7 +82,7 @@ const orderByEnum = (
 export const itemsOrderBy = (
   items: Array<CollectionItem>,
   orderBy: string,
-  orderByType: 'string' | 'number' | 'enum' | undefined,
+  orderByType: ColumnType | undefined,
   order: SortOrder,
   defaultOrderBy?: CollectionColumn
 ) => {

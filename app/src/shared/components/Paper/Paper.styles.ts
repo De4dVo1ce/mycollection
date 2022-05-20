@@ -7,5 +7,6 @@ export const StyledPaper = styled(Paper)`
     align-items: left;
     align-content: left;
     text-align: left;
+    margin-bottom: 24px;
   }
 `

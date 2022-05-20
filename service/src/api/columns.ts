@@ -62,7 +62,7 @@ router.post('/:collectionId/columns', (req, res) => {
 
   const body = req.body
   const columns: Array<CollectionColumn> =
-    body.column as Array<CollectionColumn>
+    body.columns as Array<CollectionColumn>
 
   const params = req.params
   const collectionId = params.collectionId
@@ -90,18 +90,13 @@ router.post('/:collectionId/columns', (req, res) => {
           return
         }
 
-        updateMultipleColumns(collectionId, columns, (err, numUpdated) => {
+        updateMultipleColumns(collectionId, columns, (err) => {
           if (err) {
             res.status(statusCodes.INTERNAL_SERVER_ERROR).end()
             return
           }
 
-          if (numUpdated < 1) {
-            res.status(statusCodes.NOT_FOUND).end()
-            return
-          }
-
-          res.status(statusCodes.OK).end()
+          res.status(statusCodes.CREATED).end()
         })
       })
     })

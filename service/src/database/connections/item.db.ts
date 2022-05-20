@@ -8,9 +8,15 @@ export class ItemDatabase extends DatabaseConnection<CollectionItem> {
 
   getAllByCollectionId(
     collection_id: string,
+    prop: string,
+    search: string,
     callback?: (err: Error, docs: Array<CollectionItem>) => void
   ) {
-    this.connection.find({ collection_id: collection_id }, {}, callback)
+    const regex = new RegExp(search, 'i')
+    const template: any = { collection_id: collection_id }
+    template[prop] = regex
+
+    this.connection.find({ ...template }, {}, callback)
   }
 
   removeByCollectionId(

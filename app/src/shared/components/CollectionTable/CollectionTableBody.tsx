@@ -1,50 +1,45 @@
 import {
-  TableBody as MUITableBody,
-  TableCell as MUITableCell,
-  TableRow as MUITableRow,
+  TableBody as MuiTableBody,
+  TableCell as MuiTableCell,
+  TableRow as MuiTableRow,
 } from '@mui/material'
 import React from 'react'
-import { CollectionItem } from '../../resources/datastores.types'
+import { messages } from '../../resources'
+import { CollectionTableItem } from './CollectionTable.types'
 import { CollectionTableColumn } from './CollectionTable.types'
 
 export interface CollectionTableBodyProps {
   columns: Array<CollectionTableColumn>
-  rows: Array<CollectionItem>
-  rowsPerPage: number
-  page: number
+  rows: Array<CollectionTableItem>
 }
 
 const CollectionTableBody: React.FC<CollectionTableBodyProps> = ({
   columns,
   rows,
-  rowsPerPage,
-  page,
 }) => {
   return (
-    <MUITableBody>
+    <MuiTableBody>
       {rows.length > 0 ? (
-        rows
-          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          .map((row, index) => (
-            <MUITableRow
-              key={`${index}-${row.name}`}
-              hover
-              role="checkbox"
-              tabIndex={-1}
-            >
-              {columns.map((column, index) =>
-                column.dataProvider(column, column.name, row, index, '40px')
-              )}
-            </MUITableRow>
-          ))
+        rows.map((row, index) => (
+          <MuiTableRow
+            key={`${index}-${row.name}`}
+            hover
+            role="checkbox"
+            tabIndex={-1}
+          >
+            {columns.map((column, index) =>
+              column.dataProvider(column, column.name, row, index)
+            )}
+          </MuiTableRow>
+        ))
       ) : (
-        <MUITableRow>
-          <MUITableCell colSpan={columns.length} align="center">
-            {'No Data Found'}
-          </MUITableCell>
-        </MUITableRow>
+        <MuiTableRow>
+          <MuiTableCell colSpan={columns.length} align="center">
+            {messages.NO_DATA}
+          </MuiTableCell>
+        </MuiTableRow>
       )}
-    </MUITableBody>
+    </MuiTableBody>
   )
 }
 

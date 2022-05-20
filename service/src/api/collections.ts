@@ -8,9 +8,10 @@ import {
 } from '../logic/collection/collection'
 import { checkAccess } from '../logic/auth/authentication'
 import { statusCodes } from '../resources/statusCodes'
-import { Collection } from '../database/datastores.types'
+import { Collection, CollectionColumn } from '../database/datastores.types'
 import { router as columnRouter } from './columns'
 import { router as itemsRouter } from './items'
+import { updateMultipleColumns } from '../logic/collection/collectionColumn'
 
 export const router = Router()
 
@@ -22,24 +23,26 @@ router.post('/new', (req, res) => {
   const access_token: string = headers.authorization
 
   const body = req.body
-  const user_id: string = body.user_id
   const collection: Collection = body.collection as Collection
 
-  if (access_token && user_id && collection) {
+  if (access_token && collection) {
     checkAccess(access_token, (isValid, access_owner_id) => {
-      if (!isValid || user_id !== access_owner_id) {
+      if (!isValid) {
         res.status(statusCodes.UNAUTHORIZED).end()
         return
       }
 
-      createCollection(collection, (err) => {
-        if (err) {
-          res.status(statusCodes.INTERNAL_SERVER_ERROR).end()
-          return
-        }
+      createCollection(
+        { ...collection, user_id: access_owner_id, count: 0 },
+        (err, collection) => {
+          if (err) {
+            res.status(statusCodes.INTERNAL_SERVER_ERROR).end()
+            return
+          }
 
-        res.status(statusCodes.CREATED).end()
-      })
+          res.status(statusCodes.CREATED).json({ collection: collection })
+        }
+      )
     })
   } else {
     res.status(statusCodes.BAD_REQUEST).end()
@@ -95,6 +98,11 @@ router.get('/:collectionId', (req, res) => {
           return
         }
 
+        if (!collection) {
+          res.status(statusCodes.NOT_FOUND).end()
+          return
+        }
+
         if (collection.user_id !== access_owner_id) {
           res.status(statusCodes.UNAUTHORIZED).end()
           return
@@ -114,11 +122,13 @@ router.post('/:collectionId', (req, res) => {
 
   const body = req.body
   const collection: Collection = body.collection as Collection
+  const columns: Array<CollectionColumn> =
+    body.columns as Array<CollectionColumn>
 
   const params = req.params
   const collectionId = params.collectionId
 
-  if (access_token && collectionId) {
+  if (access_token && collectionId && collection && columns) {
     checkAccess(access_token, (isValid, access_owner_id) => {
       if (!isValid || access_owner_id !== collection.user_id) {
         res.status(statusCodes.UNAUTHORIZED).end()
@@ -136,7 +146,14 @@ router.post('/:collectionId', (req, res) => {
           return
         }
 
-        res.status(statusCodes.OK).end()
+        updateMultipleColumns(collectionId, columns, (err) => {
+          if (err) {
+            res.status(statusCodes.INTERNAL_SERVER_ERROR).end()
+            return
+          }
+
+          res.status(statusCodes.OK).end()
+        })
       })
     })
   } else {

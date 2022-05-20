@@ -22,6 +22,6 @@ app.use(`/collections`, collectionsRouter)
 app.use(`/shared`, sharedRouter)
 app.use(`/users`, userRouter)
 
-const port = process.env.PORT || 4001
+const port = process.env.PORT || 4000
 
 app.listen(port, () => console.log(`Service listening at PORT: ${port}`))

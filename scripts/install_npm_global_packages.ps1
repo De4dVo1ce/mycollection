@@ -18,7 +18,7 @@ $workDir = Get-Location
 $repoRoot = Join-Path $PSScriptRoot "../"
 Set-Location $repoRoot
 
-$packages = @('npm', 'yarn', 'pm2', 'serve')
+$packages = @('npm', 'yarn')
 
 try {
     $npmVersion = npm --version

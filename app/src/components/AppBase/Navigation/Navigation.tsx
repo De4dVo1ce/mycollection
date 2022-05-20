@@ -10,6 +10,7 @@ import {
 import { NavigationEntry } from '../appValues'
 import { useNavigate } from 'react-router-dom'
 import { LogoDev } from '@mui/icons-material'
+import { areEqual } from '../../../shared'
 
 const isEntryActive = (path: string): boolean => {
   const mainLocation: string = document.location.pathname
@@ -50,7 +51,9 @@ export const Navigation: React.FC<NavigationProps> = ({
               isMobileView={isMobileView}
               active={isEntryActive(link)}
               onClick={() => {
-                navigate(link)
+                if (!areEqual(window.location.pathname, link)) {
+                  navigate(link, { replace: false })
+                }
               }}
             >
               <IconDiv isMobileView={isMobileView}>{icon}</IconDiv>

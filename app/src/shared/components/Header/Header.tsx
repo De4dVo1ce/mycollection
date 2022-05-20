@@ -3,16 +3,21 @@ import React from 'react'
 import { useTheme } from '../../../components/AppBase/ThemeProvider/ThemeProvider'
 import { Button } from '../Button'
 import { Menu, MenuProps } from '../Menu'
+import { MoreActionsButton, MoreActionsButtonProps } from '../MoreActionsButton'
 import { HeaderDiv, HeaderTypography } from './Header.styles'
 
 type HeaderAction =
   | {
       type: 'button'
-      props: MuiButtonProps
+      props: MuiButtonProps & { text?: string }
     }
   | {
       type: 'menu'
-      props: MenuProps
+      props: MenuProps & { text?: string }
+    }
+  | {
+      type: 'more_action'
+      props: MoreActionsButtonProps
     }
 
 interface HeaderProps extends TypographyProps {
@@ -24,45 +29,67 @@ interface HeaderProps extends TypographyProps {
 export const Header: React.FC<HeaderProps> = (props) => {
   const themeContext = useTheme()
 
-  if (props.primary) {
-    if (props.primary.type === 'button') {
-      props.primary.props.variant = 'contained'
-    } else if (props.primary.props.button) {
-      props.primary.props.button.variant = 'contained'
+  const primary = props.primary
+  const secondary = props.secondary
+  const text = props.text
+
+  if (primary) {
+    switch (primary.type) {
+      case 'button':
+        primary.props.variant = 'contained'
+        break
+      case 'menu':
+        if (primary.props.button) {
+          primary.props.button.variant = 'contained'
+        }
+        break
+      default:
+        break
     }
   }
 
-  if (props.secondary) {
-    if (props.secondary.type === 'button') {
-      props.secondary.props.variant = 'outlined'
-    } else if (props.secondary.props.button) {
-      props.secondary.props.button.variant = 'outlined'
+  if (secondary) {
+    switch (secondary.type) {
+      case 'button':
+        secondary.props.variant = 'outlined'
+        break
+      case 'menu':
+        if (secondary.props.button) {
+          secondary.props.button.variant = 'outlined'
+        }
+        break
+      default:
+        break
     }
   }
 
   return (
     <HeaderDiv>
       <HeaderTypography color={themeContext.theme.text?.primary} {...props}>
-        {props.text}
+        {text}
       </HeaderTypography>
-      {props.primary ? (
-        props.primary.type === 'button' ? (
-          <Button {...props.primary.props} />
+      {primary &&
+        (primary.type === 'button' ? (
+          <Button
+            {...primary.props}
+            children={primary.props.text ?? primary.props.children}
+          />
+        ) : primary.type === 'menu' ? (
+          <Menu {...primary.props} />
         ) : (
-          <Menu {...props.primary.props} />
-        )
-      ) : (
-        <></>
-      )}
-      {props.secondary ? (
-        props.secondary.type === 'button' ? (
-          <Button {...props.secondary.props} />
+          <MoreActionsButton {...primary.props} />
+        ))}
+      {secondary &&
+        (secondary.type === 'button' ? (
+          <Button
+            {...secondary.props}
+            children={secondary.props.text ?? secondary.props.children}
+          />
+        ) : secondary.type === 'menu' ? (
+          <Menu {...secondary.props} />
         ) : (
-          <Menu {...props.secondary.props} />
-        )
-      ) : (
-        <></>
-      )}
+          <MoreActionsButton {...secondary.props} />
+        ))}
     </HeaderDiv>
   )
 }

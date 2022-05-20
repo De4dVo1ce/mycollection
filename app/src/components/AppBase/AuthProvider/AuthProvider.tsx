@@ -44,7 +44,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           await status((status) => {
             switch (status) {
               case statusCodes.UNAUTHORIZED:
-                navigate(createUrlFor().login, { replace: true })
+                setUser(undefined)
+                navigate(createUrlFor().login, {
+                  replace: true,
+                })
                 break
 
               default:

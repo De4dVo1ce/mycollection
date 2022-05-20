@@ -9,13 +9,18 @@ export const createUrlFor = () => ({
   noMatch: '*',
   collections: {
     page: `/collections`,
+    new: `/collections/new`,
     withId: (collectionId: string) => ({
       page: `/collections/${collectionId}`,
-      element: (elementId: string) =>
-        `/collections/${collectionId}/elements/${elementId}`,
+      edit: `/collections/${collectionId}/edit`,
+      items: {
+        withId: (elementId: string) =>
+          `/collections/${collectionId}/items/${elementId}`,
+        new: `/collections/${collectionId}/items/new`,
+      },
     }),
   },
-  shared: {
+  shares: {
     page: `/shared`,
     withId: (id: string) => `/shared/${id}`,
   },
